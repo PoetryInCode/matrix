@@ -12,7 +12,7 @@ LINK=-lncurses
 FINBIN=bin/main.o
 
 install: build ;
-	cp $(FINBIN) /usr/local/bin/
+	cp -u $(FINBIN) /usr/local/bin/
 
 build:
 	$(CMD) ./src/main.c $(LINK) -o ./bin/matrix
