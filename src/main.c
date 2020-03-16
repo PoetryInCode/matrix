@@ -5,6 +5,9 @@
 #include <termios.h>
 #include <curses.h>
 
+#define UP (1)
+#define DOWN (2)
+
 int main(int argc, char **argv) {
     WINDOW term = *initscr();
     start_color();
@@ -52,7 +55,13 @@ int main(int argc, char **argv) {
     for(int i=0; i<maxX; i++)
         cascade[i]=ERR;
 
-    while(getch()==ERR) {
+	int pause = 0;
+	int dir = DOWN;
+	int get = getch();
+    while(get!='q') {
+		if(get=='s') {
+			pause=1;
+		}
         int xPos = rand()%maxX;//get random x position for the stream
         if(cascade[xPos]==ERR) {//make sure the stream is set to active
             cascade[xPos]=0;
@@ -65,27 +74,72 @@ int main(int argc, char **argv) {
                 } else {
 					if(rand()%10==1) {//check if the stream will jump
 						if(!(jmpTail[i]<=maxY)) {
-							jmpTail[i]=cascade[i]-tailLen[i];
-							cascade[i]=cascade[i]+rand()%8;
+							if(dir==DOWN) {
+								cascade[i]=cascade[i]+rand()%8;
+								jmpTail[i]=cascade[i]-tailLen[i];
+							} else {
+								cascade[i]=cascade[i]-rand()%8;
+								jmpTail[i]=cascade[i]+tailLen[i];
+							}
 						}
 					} else {
-						cascade[i]++;//increase the position
+						if(!pause) {
+							if(dir==DOWN) {
+								cascade[i]++;//increase the position
+							} else {
+								cascade[i]--;
+							}
+						}
 					}
                 }
             }
             if(tail[i]!=maxY) {//keep increasing the tail untill it is at the bottom
-                tail[i]++;
+				if(!pause) {
+					if(dir==DOWN) {
+						tail[i]++;
+					} else {
+						tail[i]--;
+					}
+				}
             }
-			if(jmpTail[i]==maxY) {
+			if(jmpTail[i]==maxY || jmpTail==0) {
 				jmpTail[i]=OK;
 			} else {
-				jmpTail[i]++;
+				if(!pause) {
+					if(dir==DOWN) {
+						jmpTail[i]++;
+					} else {
+						jmpTail[i]--;
+					}
+				}
 			}
 			mvaddch(jmpTail[i],i,' ');
             mvaddch(tail[i],i,' ');
-            mvaddch(cascade[i],i,(rand()%57)+65);
+            mvaddch(cascade[i],i,(rand()%/*57*/57)+65);
         }
         refresh();
+		if(!pause) {
+			get=getch();
+		} else {
+			timeout(-1);
+			switch (getch()) {
+				case 's':
+					pause=!pause;
+				break;
+				case 'r':
+					pause=1;
+					if(dir=DOWN) {
+						dir=UP;
+
+					} else {
+						if(dir=UP) {
+							dir=DOWN;
+						}
+					}
+				break;
+			}
+			timeout(time);
+		}
     }
     endwin();
     return 0;
