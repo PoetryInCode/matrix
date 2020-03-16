@@ -65,6 +65,8 @@ int main(int argc, char **argv) {
 
 	int pause = 0;
 	int dir = DOWN;
+	int limit = maxY;
+	int startPos = 0;
 	int get = getch();
     while(get!='q') {
 		if(get=='s') {
@@ -72,7 +74,7 @@ int main(int argc, char **argv) {
 		}
         int xPos = rand()%maxX;//get random x position for the stream
         if(cascade[xPos]==ERR) {//make sure the stream is set to active
-            cascade[xPos]=0;
+            cascade[xPos]=startPos;
 		}
 		//---------swich to weird format-----------
         for(int i=0; i<maxX; i++)
@@ -81,8 +83,12 @@ int main(int argc, char **argv) {
 			{
             	if(cascade[i]!=ERR)
 				{
-                	tail[i] = cascade[i]-tailLen[i];
-                	if(cascade[i]==maxY)
+					if(dir==DOWN) {
+						tail[i] = cascade[i]-tailLen[i];
+					} else {
+						tail[i] = cascade[i]+tailLen[i];
+					}
+                	if(cascade[i]==limit)
 					{//check if the position is at the bottom of the screen
                     	cascade[i]=ERR;//set the position to ERR if it is at the bottom
                 	}
@@ -119,7 +125,7 @@ int main(int argc, char **argv) {
             	}
 			}
 			//-------Back to normal format-------
-            if(tail[i]!=maxY) {//keep increasing the tail untill it is at the bottom
+            if(tail[i]!=limit) {//keep iterating the tail intill it is at the limit
 				if(dir==DOWN) {
 					tail[i]++;
 				} else {
@@ -151,12 +157,14 @@ int main(int argc, char **argv) {
 				break;
 				case 'r':
 					pause=FALSE;
-					if(dir=DOWN) {
+					if(dir==DOWN) {
 						dir=UP;
+						limit=0;
+						startPos=maxY;
 					} else {
-						if(dir=UP) {
-							dir=DOWN;
-						}
+						dir=DOWN;
+						limit=maxY;
+						startPos=0;
 					}
 				break;
 				case 'q':
