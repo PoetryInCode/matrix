@@ -9,7 +9,7 @@ OTHER=
 CMD=$(CC) $(DBG) -std=$(STD) $(OPT) $(OPT)
 LINK=-lncurses
 
-FINBIN=bin/main.o
+FINBIN=bin/matrix
 
 install: build ;
 	cp -u $(FINBIN) /usr/local/bin/
