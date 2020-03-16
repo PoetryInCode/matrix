@@ -8,6 +8,14 @@
 #define UP (1)
 #define DOWN (2)
 
+#ifndef TRUE
+#define TRUE 1
+#endif
+
+#ifndef FALSE
+#define FALSE 0
+#endif
+
 int main(int argc, char **argv) {
     WINDOW term = *initscr();
     start_color();
@@ -60,85 +68,105 @@ int main(int argc, char **argv) {
 	int get = getch();
     while(get!='q') {
 		if(get=='s') {
-			pause=1;
+			pause=TRUE;
 		}
         int xPos = rand()%maxX;//get random x position for the stream
         if(cascade[xPos]==ERR) {//make sure the stream is set to active
             cascade[xPos]=0;
 		}
-        for(int i=0; i<maxX; i++) {//move the streams down
-            if(cascade[i]!=ERR) {
-                tail[i] = cascade[i]-tailLen[i];
-                if(cascade[i]==maxY) {//check if the position is at the bottom of the screen
-                    cascade[i]=ERR;//set the position to ERR if it is at the bottom
-                } else {
-					if(rand()%10==1) {//check if the stream will jump
-						if(!(jmpTail[i]<=maxY)) {
-							if(dir==DOWN) {
-								cascade[i]=cascade[i]+rand()%8;
-								jmpTail[i]=cascade[i]-tailLen[i];
-							} else {
-								cascade[i]=cascade[i]-rand()%8;
-								jmpTail[i]=cascade[i]+tailLen[i];
+		//---------swich to weird format-----------
+        for(int i=0; i<maxX; i++)
+		{//move the streams up/down
+			if(!pause)
+			{
+            	if(cascade[i]!=ERR)
+				{
+                	tail[i] = cascade[i]-tailLen[i];
+                	if(cascade[i]==maxY)
+					{//check if the position is at the bottom of the screen
+                    	cascade[i]=ERR;//set the position to ERR if it is at the bottom
+                	}
+					else
+					{
+						if(rand()%10==1)
+						{//check if the stream will jump
+							if(!(jmpTail[i]<=maxY))
+							{
+								if(dir==DOWN)
+								{
+									cascade[i]=cascade[i]+rand()%8;
+									jmpTail[i]=cascade[i]-tailLen[i];
+								}
+								else
+								{
+									cascade[i]=cascade[i]-rand()%8;
+									jmpTail[i]=cascade[i]+tailLen[i];
+								}
 							}
 						}
-					} else {
-						if(!pause) {
-							if(dir==DOWN) {
+						else
+						{
+							if(dir==DOWN)
+							{
 								cascade[i]++;//increase the position
-							} else {
+							}
+							else
+							{
 								cascade[i]--;
 							}
 						}
-					}
-                }
-            }
+                	}
+            	}
+			}
+			//-------Back to normal format-------
             if(tail[i]!=maxY) {//keep increasing the tail untill it is at the bottom
-				if(!pause) {
-					if(dir==DOWN) {
-						tail[i]++;
-					} else {
-						tail[i]--;
-					}
+				if(dir==DOWN) {
+					tail[i]++;
+				} else {
+					tail[i]--;
 				}
             }
 			if(jmpTail[i]==maxY || jmpTail==0) {
 				jmpTail[i]=OK;
 			} else {
-				if(!pause) {
-					if(dir==DOWN) {
-						jmpTail[i]++;
-					} else {
-						jmpTail[i]--;
-					}
+				if(dir==DOWN) {
+					jmpTail[i]++;
+				} else {
+					jmpTail[i]--;
 				}
 			}
 			mvaddch(jmpTail[i],i,' ');
             mvaddch(tail[i],i,' ');
-            mvaddch(cascade[i],i,(rand()%/*57*/57)+65);
+            mvaddch(cascade[i],i,(rand()%60)+65);
         }
         refresh();
 		if(!pause) {
-			get=getch();
+			timeout(time);
 		} else {
 			timeout(-1);
-			switch (getch()) {
+			get=getch();
+			switch (get) {
 				case 's':
 					pause=!pause;
 				break;
 				case 'r':
-					pause=1;
+					pause=FALSE;
 					if(dir=DOWN) {
 						dir=UP;
-
 					} else {
 						if(dir=UP) {
 							dir=DOWN;
 						}
 					}
 				break;
+				case 'q':
+					get='q';
+					break;
 			}
 			timeout(time);
+		}
+		if(get!='q') {
+			get=getch();
 		}
     }
     endwin();
