@@ -17,6 +17,13 @@
 #define FALSE 0
 #endif
 
+int help() {
+	puts("Program Flags:");
+	printf("\t--tickTime [integer]\n\t\tWill change the time waited between frame updates in miliseconds\n\n");
+	printf("\t--streanLen [integer]\n\t\tChanges the vertical length of the stream in characters\n");
+	return 1;
+}
+
 int main(int argc, char **argv) {
 
 	WINDOW term = *initscr();
@@ -25,20 +32,32 @@ int main(int argc, char **argv) {
 	attron(COLOR_PAIR(1));
 	noecho();
 	if(nodelay(&term,TRUE)==ERR) {
-		puts("Error could not enter no-delay mode");
+		puts("[ERROR] could not enter no-delay mode");
 		return ERR;
 	}
 
-	int time;
-	int initTailLen;
+	int time = 15;
+	int initTailLen = 20;
 	for(int i=1; i<argc; i++) {
-		if(strcmp(argv[i],"--tickTime")) {
-			time=atoi(argv[i+1]);
-			i++;
-		}
-		if(strcmp(argv[i],"--streamLen")) {
-			initTailLen=atoi(argv[i+1]);
-			i++;
+		if(strcmp(argv[i],"--help") == 0 || strcmp(argv[i], "-h") == 0) {
+			endwin();
+			help();
+			return 1;
+		} else {
+			if(strcmp(argv[i],"--tickTime") == 0) {
+				time=atoi(argv[i+1]);
+				i++;
+			} else {
+				if(strcmp(argv[i],"--streamLen") == 0) {
+					initTailLen=atoi(argv[i+1]);
+					i++;
+				} else {
+					endwin();
+					printf("[ERROR] Invalid flag\n\n");
+					help();
+					return -1;
+				}
+			}
 		}
 	}
 	timeout(time);
@@ -116,7 +135,7 @@ int main(int argc, char **argv) {
 					tail[i]--;
 				}
 			}
-			if(jmpTail[i]==maxY || jmpTail==0) {
+			if(jmpTail[i]==maxY || jmpTail[i]==0) {
 				jmpTail[i]=OK;
 			} else {
 				if(dir==DOWN) {
@@ -162,5 +181,5 @@ int main(int argc, char **argv) {
 		}
 	}
 	endwin();
-	return 0;
+	return 1;
 }
