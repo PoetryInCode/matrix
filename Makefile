@@ -1,9 +1,9 @@
 all: build
 
-CC=gcc
+CC=clang
 STD=gnu99
 OPT=-Os
-DBG=-g -ggdb -gstabs
+DBG=-g -ggdb
 OTHER=
 
 CMD=$(CC) $(DBG) -std=$(STD) $(OPT) $(OPT)

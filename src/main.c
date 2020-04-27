@@ -4,6 +4,7 @@
 #include <sys/ioctl.h>
 #include <termios.h>
 #include <curses.h>
+#include <string.h>
 
 #define UP (1)
 #define DOWN (2)
@@ -17,6 +18,7 @@
 #endif
 
 int main(int argc, char **argv) {
+
 	WINDOW term = *initscr();
 	start_color();
 	init_pair(1,COLOR_GREEN,COLOR_BLACK);
@@ -26,21 +28,24 @@ int main(int argc, char **argv) {
 		puts("Error could not enter no-delay mode");
 		return ERR;
 	}
+
 	int time;
-	if(argc >= 3) {
-		time=atoi(argv[2]);
-	} else {
-		time=20;
+	int initTailLen;
+	for(int i=1; i<argc; i++) {
+		if(strcmp(argv[i],"--tickTime")) {
+			time=atoi(argv[i+1]);
+			i++;
+		}
+		if(strcmp(argv[i],"--streamLen")) {
+			initTailLen=atoi(argv[i+1]);
+			i++;
+		}
 	}
 	timeout(time);
+
 	int maxX = COLS;
 	int maxY = LINES;
-	int initTailLen;
-	if(argc >= 2) {
-		initTailLen=atoi(argv[1]);
-	} else {
-		initTailLen=10;
-	}
+
 	int tailLen[maxX];
 
 	for(int i=0; i<maxX; i++) {
@@ -104,7 +109,6 @@ int main(int argc, char **argv) {
 					}
 				}
 			}
-			//-------Back to normal format-------
 			if(tail[i]!=limit) {//keep iterating the tail intill it is at the limit
 				if(dir==DOWN) {
 					tail[i]++;
