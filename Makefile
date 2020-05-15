@@ -26,3 +26,6 @@ clean:
 clean-logs:
 	rm ./vgcore.*
 	rm ./massif.out.*
+
+run: bin/matrix ;
+	./bin/matrix --tickTime 15 --streamLen 20
