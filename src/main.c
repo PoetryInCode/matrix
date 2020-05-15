@@ -25,17 +25,6 @@ int help() {
 }
 
 int main(int argc, char **argv) {
-
-	WINDOW term = *initscr();
-	start_color();
-	init_pair(1,COLOR_GREEN,COLOR_BLACK);
-	attron(COLOR_PAIR(1));
-	noecho();
-	if(nodelay(&term,TRUE)==ERR) {
-		puts("[ERROR] could not enter no-delay mode");
-		return ERR;
-	}
-
 	int time = 15;
 	int initTailLen = 20;
 	for(int i=1; i<argc; i++) {
@@ -60,6 +49,16 @@ int main(int argc, char **argv) {
 			}
 		}
 	}
+
+	WINDOW term = *initscr();
+	start_color();
+	init_pair(1,COLOR_GREEN,COLOR_BLACK);
+	attron(COLOR_PAIR(1));
+	noecho();
+	if(nodelay(&term,TRUE)==ERR) {
+		puts("[ERROR] could not enter no-delay mode");
+		return ERR;
+	}
 	timeout(time);
 
 	int maxX = COLS;
@@ -73,7 +72,7 @@ int main(int argc, char **argv) {
 			tailLen[i]=initTailLen+(rand()%(4%initTailLen));
 		} else {
 			if(num<=1) {
-				tailLen[i]=initTailLen-(rand()%(8%initTailLen));
+				tailLen[i]=initTailLen-(rand()%initTailLen);
 			}
 		}
 	}
