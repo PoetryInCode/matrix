@@ -8,5 +8,6 @@ It will start the streams moving downwards. Pressing \[S] will start/stop the st
 ## Flags
 
 `--help` or `-h`: Print a help message for the program
+
 `--streamLen`: Sets the length of the stream to the proceeding value
 `--tickTime`: Sets the time in ms between redraws of the streams
