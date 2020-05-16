@@ -15,6 +15,10 @@ It will start the streams moving downwards. Pressing \[S] will start/stop the st
 
 ### Project Sources
 
+These were used to learn how to use OpenGL:
+
 https://learnopengl.com/
 
 https://lazyfoo.net/tutorials/OpenGL/index.php
+
+https://www.khronos.org/registry/OpenGL/index_gl.php
