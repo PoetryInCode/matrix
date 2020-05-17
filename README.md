@@ -12,13 +12,3 @@ It will start the streams moving downwards. Pressing \[S] will start/stop the st
 `--streamLen`: Sets the length of the stream to the proceeding value
 
 `--tickTime`: Sets the time in ms between redraws of the streams
-
-### Project Sources
-
-These were used to learn how to use OpenGL:
-
-https://learnopengl.com/
-
-https://lazyfoo.net/tutorials/OpenGL/index.php
-
-https://www.khronos.org/registry/OpenGL/index_gl.php
