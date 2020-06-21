@@ -52,7 +52,10 @@ Mkfile.old
 dkms.conf
 
 .history
+
 bin/*
+bin/
+
 .kdev4
 
 vgcore.*
