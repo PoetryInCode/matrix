@@ -1,31 +1,16 @@
 all: build
 
-CC=clang
-STD=gnu99
-OPT=-Os
-DBG=-g -ggdb
-OTHER=
-
-CMD=$(CC) $(DBG) -std=$(STD) $(OPT) $(OPT)
-LINK=-lncurses
-
-FINBIN=bin/matrix
+CFLAGS=-lncurses
 
 install: build ;
 	cp -u $(FINBIN) /usr/local/bin/
 
-build:
-	$(CMD) ./src/main.c $(LINK) -o ./bin/matrix
+build: ./matrix
 
-valgrind: build ;
-	valgrind ./$(FINBIN)
+./matrix: ./matrix.c
 
 clean:
-	rm -rf ./bin/*
-
-clean-logs:
-	rm ./vgcore.*
-	rm ./massif.out.*
+	rm -f ./matrix
 
 run: bin/matrix ;
 	./bin/matrix --tickTime 15 --streamLen 20
